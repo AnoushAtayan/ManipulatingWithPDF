@@ -2,6 +2,7 @@
 
 import csv
 import re
+from pandas import DataFrame
 
 
 #open csv file created by tabula
@@ -20,7 +21,7 @@ for row in reader:
         list_of_fields.append(row)
 
 
-print list_of_fields
+
 
 #all fields in the first column
 
@@ -39,19 +40,19 @@ for i in list_of_fields[0][1:]:
 
 
 
-print list_of_names
+
 
 #create list of tranches' currencies
 
 list_of_currencies=(len(list_of_names))*['USD']
 
-print list_of_currencies
+
 
 #create list of tranches' Fixing to deal currencies
 
 list_of_fxrate = (len(list_of_names))*['1']
 
-print list_of_fxrate
+
 
 # create list of tranches' types
 
@@ -76,7 +77,7 @@ for i in list_of_fields[index_of_deferral[0]][1:]:
         list_of_deferral.append('PIK')
     else:
         list_of_deferral.append('N/A')
-print list_of_deferral
+
 
 
 
@@ -93,7 +94,7 @@ for i in list_of_fields[index_of_balances[0]][1:]:
     list_of_balances.append(balance.group())
 
 
-print list_of_balances
+
 
 
 # create list of tranches' Moody's ratings
@@ -111,7 +112,7 @@ else:
             moodys = re.search(r'[^\u0000-\u007F]+(\w+)', i)
             rating_Moodys.append(moodys.group(1))
 
-print rating_Moodys
+
 
 # create list of tranches' S&P ratings
 
@@ -129,7 +130,7 @@ else:
             sp = re.search(r'[^\u0000-\u007F]+(\w+)', i)
             rating_SP.append(sp.group(1))
 
-print rating_SP
+
 
 
 
@@ -150,7 +151,7 @@ else:
             rating_Fitch.append(fitch.group(1))
 
 
-print rating_Fitch
+
 
 
 # create list of tranches' coupon types
@@ -167,7 +168,7 @@ for i in list_of_fields[index_ctype1[0]][1:]:
         list_of_coupon_type.append('fixed')
     else:
         list_of_coupon_type.append('variable')
-print list_of_coupon_type
+
 
 
 # create list of tranches' Spreads and coupons
@@ -175,7 +176,7 @@ list_of_spreads = []
 list_of_coupons = []
 
 index_spread = [i for i, item, in enumerate(column_1) if re.search(r'\w*(Rate)', item)]
-print index_spread
+
 for i in list_of_fields[index_spread[0]][1:]:
     spread = re.search(r'.*LIBOR.*(\d+\.\d+)', i)
 
@@ -195,7 +196,47 @@ for i in list_of_fields[index_spread[0]][1:]:
 
 
 
+# create list of tranches' rankings
+
+list_of_rankings = []
+
+index_ranking = [i for i, item in enumerate(column_1) if re.search(r'\w*Pari\w*', item)]
 
 
-print list_of_spreads
-print list_of_coupons
+list_of_rankings.append('1')
+
+for i in list_of_fields[index_ranking[0]][1:len(list_of_fields[index_ranking[0]])-1]:
+    if i == 'None':
+        list_of_rankings.append(int(list_of_rankings[(len(list_of_rankings) - 1)]) + 1)
+
+    else:
+        if list_of_fields[index_ranking[0]][len(list_of_rankings)+1] == 'None':
+            list_of_rankings.append(int(list_of_rankings[(len(list_of_rankings) - 1)]) + 1)
+        else:
+            list_of_rankings.append(int(list_of_rankings[(len(list_of_rankings) - 1)]))
+
+
+
+# create list of tranches' Current Coupons, Original wals
+
+list_of_ccoupons = (len(list_of_names))*['']
+list_of_wals =(len(list_of_names))*['']
+
+
+
+print  list_of_rankings
+frame = {'Ranking': list_of_rankings, 'Tranche type': list_of_types, 'Interest deferral': list_of_deferral, 'Fixing to deal currency': list_of_fxrate,\
+        'Name': list_of_names, 'Currency' : list_of_currencies, 'Original amount': list_of_balances, 'Initial ratings (M)': rating_Moodys,\
+         'Initial ratings (SNP)': rating_SP, 'Initial ratings (F)': rating_Fitch, 'Coupon type': list_of_coupon_type, 'Spread': list_of_spreads,
+         'Coupon': list_of_coupons, 'Current Coupon': list_of_ccoupons, 'Coupon frequency': list_of_cfreq, 'Original wal': list_of_wals}
+data = DataFrame(frame, columns=['Ranking','Tranche type', 'Interest deferral', 'Fixing to deal currency', 'Name', 'Currency', 'Original amount', 'Initial ratings (M)', 'Initial ratings (SNP)', 'Initial ratings (F)',\
+'Coupon type', 'Spread', 'Coupon', 'Current Coupon', 'Coupon frequency', 'Original wal'])
+
+
+
+data.to_csv('C:\Users\Anoush Atayan\Desktop\My_First_Project.csv', index = False)
+
+
+
+
+
