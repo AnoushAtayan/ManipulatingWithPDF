@@ -35,7 +35,7 @@ for i in list_of_fields[0][1:]:
     if str(i).startswith('Sub'):
         list_of_names.append('SUB')
     else:
-        namesRegex = re.search(r'Class +(\w+(-\w+)?)( +Notes)', i)
+        namesRegex = re.search(r'Class +(\w+(-\w+)?) +Notes', i)
         list_of_names.append(namesRegex.group(1).replace('-', ''))
 
 
@@ -103,7 +103,7 @@ rating_Moodys = []
 
 index_Moodys = [i for i, item in enumerate(column_1) if re.search(r'\w*Mood', item)]
 if len(index_Moodys)==0:
-    rating_Fitch = (len(list_of_names)*[''])
+    rating_Moodys = (len(list_of_names)*[''])
 else:
     for i in list_of_fields[index_Moodys[0]][1:]:
         if i == 'N/A':
@@ -127,7 +127,7 @@ else:
         if i == 'N/A':
             rating_SP.append('')
         else:
-            sp = re.search(r'[^\u0000-\u007F]+(\w+)', i)
+            sp = re.search(r'[^\u0000-\u007F]+(\w+(\+|-)?)', i)
             rating_SP.append(sp.group(1))
 
 
@@ -147,7 +147,7 @@ else:
         if i == 'N/A':
             rating_Fitch.append('')
         else:
-            fitch = re.search(r'[^\u0000-\u007F]+(\w+)', i)
+            fitch = re.search(r'[^\u0000-\u007F]+(\w+(\+|-)?(sf))', i)
             rating_Fitch.append(fitch.group(1))
 
 
