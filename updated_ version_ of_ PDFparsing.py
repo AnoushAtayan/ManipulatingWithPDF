@@ -22,7 +22,7 @@ def rename_indices(text):
         return 'NA'
 
 def rename_columns(text):
-    col_map = {'Def' : 'Interest deferral', 'Amount' or 'Principal' : 'Original amount', 'Mood' : 'Initial ratings (M)', \
+    col_map = {'Def' : 'Interest deferral', 'Amount' :'Original amount', 'Principal':'Original amount', 'Mood' : 'Initial ratings (M)', \
             'S&P' : 'Initial ratings (SNP)', 'Fitch':'Initial ratings (F)', 'Type' : 'Coupon type', 'Rate' : 'spread_coupon', \
              'Pari' : 'Ranking' }
 
